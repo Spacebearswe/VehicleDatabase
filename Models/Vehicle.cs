@@ -11,7 +11,10 @@ namespace VehicleDatabase.Models
         //PK
         public long Id { get; set; }
         //FK
+        public int BrandId { get; set; }
         public int ColorId { get; set; }
+        public int FuelId { get; set; }
+        public int EquipmentId { get; set; }
         //Data
         public string ModelName { get; set; }
         public string PlateNumber { get; set; }
