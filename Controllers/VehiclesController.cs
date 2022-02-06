@@ -20,16 +20,17 @@ namespace VehicleDatabase.Controllers
             _context = context;
         }
 
-        // GET: api/Vehicles
+        // GET: api/Vehicle
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetVehicles()
+        public async Task<ActionResult<IEnumerable<VehicleDTO>>> GetVehicles()
         {
-            return await _context.Vehicles.ToListAsync();
+            return await _context.Vehicles
+                .Select(x => VehicleDTO(x))
+                .ToListAsync();
         }
 
-        // GET: api/Vehicles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Vehicle>> GetVehicle(long id)
+        public async Task<ActionResult<VehicleDTO>> GetVehicle(long id)
         {
             var vehicle = await _context.Vehicles.FindAsync(id);
 
@@ -38,56 +39,65 @@ namespace VehicleDatabase.Controllers
                 return NotFound();
             }
 
-            return vehicle;
+            return VehicleDTO(vehicle);
         }
 
-        // PUT: api/Vehicles/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVehicle(long id, Vehicle vehicle)
+        public async Task<IActionResult> UpdateVehicle(long id, VehicleDTO vehicleDTO)
         {
-            if (id != vehicle.Id)
+            if (id != vehicleDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(vehicle).State = EntityState.Modified;
+            var vehicle = await _context.Vehicles.FindAsync(id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            vehicle.ColorId = vehicleDTO.ColorId;
+            vehicle.ModelName = vehicleDTO.ModelName;
+            vehicle.PlateNumber = vehicleDTO.PlateNumber;
+            vehicle.VIN = vehicleDTO.VIN;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!VehicleExists(id))
             {
-                if (!VehicleExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
         }
 
-        // POST: api/Vehicles
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle vehicle)
+        public async Task<ActionResult<VehicleDTO>> CreateVehicle(VehicleDTO vehicleDTO)
         {
+            var vehicle = new Vehicle
+            {
+                ColorId = vehicleDTO.ColorId,
+                ModelName = vehicleDTO.ModelName,
+                PlateNumber = vehicleDTO.PlateNumber,
+                VIN = vehicleDTO.VIN
+            };
+
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVehicle", new { id = vehicle.Id }, vehicle);
+            return CreatedAtAction(
+                nameof(GetVehicle),
+                new { id = vehicle.Id },
+                VehicleDTO(vehicle));
         }
 
-        // DELETE: api/Vehicles/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(long id)
         {
             var vehicle = await _context.Vehicles.FindAsync(id);
+
             if (vehicle == null)
             {
                 return NotFound();
@@ -103,5 +113,14 @@ namespace VehicleDatabase.Controllers
         {
             return _context.Vehicles.Any(e => e.Id == id);
         }
+        private static VehicleDTO VehicleDTO(Vehicle vehileItem) =>
+            new VehicleDTO
+            {
+                Id = vehileItem.Id,
+                ColorId = vehileItem.ColorId,
+                ModelName = vehileItem.ModelName,
+                PlateNumber = vehileItem.PlateNumber,
+                VIN = vehileItem.VIN
+            };
     }
 }
