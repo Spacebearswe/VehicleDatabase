@@ -56,7 +56,10 @@ namespace VehicleDatabase.Controllers
                 return NotFound();
             }
 
+            vehicle.BrandId = vehicleDTO.BrandId;
             vehicle.ColorId = vehicleDTO.ColorId;
+            vehicle.FuelId = vehicleDTO.FuelId;
+            vehicle.EquipmentId = vehicleDTO.EquipmentId;
             vehicle.ModelName = vehicleDTO.ModelName;
             vehicle.PlateNumber = vehicleDTO.PlateNumber;
             vehicle.VIN = vehicleDTO.VIN;
@@ -78,7 +81,10 @@ namespace VehicleDatabase.Controllers
         {
             var vehicle = new Vehicle
             {
+                BrandId = vehicleDTO.BrandId,
                 ColorId = vehicleDTO.ColorId,
+                FuelId = vehicleDTO.FuelId,
+                EquipmentId = vehicleDTO.EquipmentId,
                 ModelName = vehicleDTO.ModelName,
                 PlateNumber = vehicleDTO.PlateNumber,
                 VIN = vehicleDTO.VIN
@@ -117,7 +123,10 @@ namespace VehicleDatabase.Controllers
             new VehicleDTO
             {
                 Id = vehileItem.Id,
+                BrandId = vehileItem.BrandId,
                 ColorId = vehileItem.ColorId,
+                FuelId = vehileItem.FuelId,
+                EquipmentId = vehileItem.EquipmentId,
                 ModelName = vehileItem.ModelName,
                 PlateNumber = vehileItem.PlateNumber,
                 VIN = vehileItem.VIN

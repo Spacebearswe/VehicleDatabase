@@ -14,7 +14,11 @@ namespace VehicleDatabase.Models
         }
 
         public DbSet<Vehicle> Vehicles { get; set; } // Vehicle has CRUD functions
-        public DbSet<Color> Colors { get; set; } // Predefiend colors - No CRUD functions
+        public DbSet<Color> Brand { get; set; } // Predefiend - No CRUD functions
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Color> Equipment { get; set; }
+        public DbSet<Color> Fuel { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +46,7 @@ namespace VehicleDatabase.Models
 
             // Seed Vehicle
             modelBuilder.Entity<Vehicle>().HasData(new Vehicle { Id = 1, BrandId = 1, ColorId = 1, EquipmentId = 1, FuelId = 3, ModelName = "XC90", PlateNumber = "BIL001", VIN = " YV1AA8843M1345789" });
+            modelBuilder.Entity<Vehicle>().HasData(new Vehicle { Id = 2, BrandId = 2, ColorId = 3, EquipmentId = 3, FuelId = 1, ModelName = "X5", PlateNumber = "BIL999", VIN = " YV1HJ8843M1345123" });
 
         }
     }
